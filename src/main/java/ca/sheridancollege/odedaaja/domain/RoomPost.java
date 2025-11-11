@@ -1,5 +1,8 @@
 package ca.sheridancollege.odedaaja.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,9 +13,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -35,6 +35,11 @@ public class RoomPost {
     private String location;
     private int capacity;
     private String resources;
+    private String department;
+    private String program;
+    private String course;
+    private Boolean quiet; // true if room is a quiet space
+    private String roomType; // LIBRARY/CLASSROOM/etc as string for backward compatibility
 
     @ManyToOne
     private Users users;

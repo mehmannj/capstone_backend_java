@@ -3,29 +3,27 @@ package ca.sheridancollege.odedaaja.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable() // Consider re-enabling CSRF as appropriate
-            .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/api/profRoomBook/**").hasRole("ADMIN")
-                .requestMatchers("/api/student/**").hasAnyRole("STUDENT", "ADMIN")
-                .requestMatchers("/api/faculty/**").hasAnyRole("FACULTY", "ADMIN")
-                .anyRequest().authenticated()
-            )
-            .httpBasic();
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ plug in config
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("OPTIONS", "/**").permitAll() // ✅ Allow all OPTIONS requests
+                .anyRequest().permitAll()
+            );
         return http.build();
     }
 
@@ -34,18 +32,18 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // ✅ Proper global CORS configuration
     @Bean
-    public org.springframework.security.core.userdetails.UserDetailsService userDetailsService(PasswordEncoder encoder) {
-        var userDetailsService = new InMemoryUserDetailsManager();
-        userDetailsService.createUser(User.withUsername("admin")
-                .password(encoder.encode("password"))
-                .roles("ADMIN").build());
-        userDetailsService.createUser(User.withUsername("student")
-                .password(encoder.encode("password"))
-                .roles("STUDENT").build());
-        userDetailsService.createUser(User.withUsername("faculty")
-                .password(encoder.encode("password"))
-                .roles("FACULTY").build());
-        return userDetailsService;
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://127.0.0.1:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // needed since you're using withCredentials
+        config.setMaxAge(3600L); // Cache preflight response for 1 hour
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }

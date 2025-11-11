@@ -1,5 +1,8 @@
 package ca.sheridancollege.odedaaja.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,9 +13,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -30,11 +30,19 @@ public class RoomRequest {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
+    private String postedBy;
     private String description;
     private String location;
     private int capacity;
     private String resources;
+    private String department;
+    private String program;
+    private String course;
+    private Boolean quietPreferred; // requester prefers quiet room
+    private String preferredRoomType;
 
     @ManyToOne
     private Users users;
+
+
 }
