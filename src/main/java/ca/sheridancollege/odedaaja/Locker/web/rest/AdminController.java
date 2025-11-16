@@ -46,7 +46,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/admin/locker")
-@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173","https://instimanage.netlify.app" }, allowCredentials = "true")
 @RequiredArgsConstructor
 public class AdminController {
 
