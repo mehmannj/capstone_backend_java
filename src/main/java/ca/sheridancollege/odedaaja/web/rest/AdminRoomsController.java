@@ -14,7 +14,7 @@ import ca.sheridancollege.odedaaja.Locker.repo.RoomAssignmentRepository;
 
 @RestController
 @RequestMapping("/api/admin/rooms")
-@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173", "https://instimanage.netlify.app" }, allowCredentials = "true")
 @RequiredArgsConstructor
 public class AdminRoomsController {
 
